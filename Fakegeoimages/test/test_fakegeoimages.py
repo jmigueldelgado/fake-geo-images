@@ -1,4 +1,4 @@
-from Fakegeomimages.fakegeoimages import FakeGeoImage
+from Fakegeoimages.fakegeoimages import FakeGeoImage
 
 
 def test_standard_image_4bands():
