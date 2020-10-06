@@ -1,5 +1,5 @@
 """
-Utility class to generate synthetic images, especially usefull for testing purposes.
+Utility class to generate synthetic images, especially useful for testing purposes.
 """
 
 import uuid

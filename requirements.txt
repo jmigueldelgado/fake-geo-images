@@ -1,0 +1,6 @@
+numpy
+scipy
+rasterio
+scikit-image
+pytest
+rio-cogeo
