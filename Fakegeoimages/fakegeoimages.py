@@ -17,7 +17,7 @@ from .logging import get_logger
 
 logger = get_logger(__name__)
 
-# Define standard land cover classes and their standard stats wrt radiance for a 4-band product
+# Define standard land cover classes and representative stats wrt radiance for a 4-band product
 LC_CLASSES = {
     "water": {"avg": [170, 300, 450, 150], "std": [10, 10, 10, 10]},
     "bare_ground": {"avg": [600, 600, 600, 900], "std": [100, 100, 100, 100]},
@@ -52,7 +52,7 @@ class FakeGeoImage:
         nodata_fill: int = 0,
     ):
         """
-        Arguments:
+        Args:
             xsize: Number of pixels in x-direction.
             ysize: Number of pixels in y-direction.
             num_bands: Number of image bands.
@@ -86,7 +86,7 @@ class FakeGeoImage:
         """
         Simulate a five classes optical image.
 
-        Arguments:
+        Args:
             seed: A random seed number. Ensures reproducibility.
 
         Returns:

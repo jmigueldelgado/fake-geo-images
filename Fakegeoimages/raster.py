@@ -3,8 +3,6 @@ Common raster handling methods shared between blocks
 """
 from pathlib import Path
 
-import numpy as np
-import rasterio as rio
 from rio_cogeo.cogeo import cog_translate
 from rio_cogeo.profiles import cog_profiles
 
@@ -21,7 +19,8 @@ def to_cog(path_to_image: Path, profile: str = "deflate", **options) -> bool:
         profile: compression profile
         options: additional kwargs
         
-    Returns: True if all went well
+    Returns:
+        True if all went well
     """
     logger.info("Now converting to COG")
     tmp_file_path = Path(str(path_to_image) + ".tmp")
@@ -48,4 +47,5 @@ def to_cog(path_to_image: Path, profile: str = "deflate", **options) -> bool:
         **options,
     )
     tmp_file_path.unlink()
+
     return True

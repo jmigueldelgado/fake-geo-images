@@ -32,4 +32,5 @@ def get_logger(name: str, level=logging.DEBUG) -> logging.Logger:
     formatter = logging.Formatter(LOG_FORMAT)
     ch.setFormatter(formatter)
     logger.addHandler(ch)
+
     return logger
