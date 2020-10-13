@@ -8,4 +8,5 @@ mypy
 pytest-mypy
 pytest-cov
 pytest-pylint
+black
 rio-cogeo

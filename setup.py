@@ -19,7 +19,9 @@ with open("docs/index.md", "r") as fh:
 
 setuptools.setup(
     name="fake-geo-images",
-    version=PARENT_DIR.joinpath("fake-geo-images/_version.txt").read_text(encoding="utf-8"),
+    version=PARENT_DIR.joinpath("fake-geo-images/_version.txt").read_text(
+        encoding="utf-8"
+    ),
     author="UP42",
     author_email="support@up42.com",
     description="Fake geospatial images for unit tests",
@@ -35,12 +37,6 @@ setuptools.setup(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
     ],
-    install_requires=[
-        "numpy",
-        "rasterio",
-        "scipy",
-        "scikit-image",
-        "rio-cogeo"
-    ],
+    install_requires=["numpy", "rasterio", "scipy", "scikit-image", "rio-cogeo"],
     python_requires=">=3.6, <3.9",
 )
