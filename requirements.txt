@@ -3,4 +3,9 @@ scipy
 rasterio
 scikit-image
 pytest
+pylint
+mypy
+pytest-mypy
+pytest-cov
+pytest-pylint
 rio-cogeo

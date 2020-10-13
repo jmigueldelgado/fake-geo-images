@@ -18,7 +18,7 @@ def to_cog(path_to_image: Path, profile: str = "deflate", **options) -> bool:
         path_to_image: path to GeoTIFF
         profile: compression profile
         options: additional kwargs
-        
+
     Returns:
         True if all went well
     """

@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import rasterio as rio
 
-from Fakegeoimages.fakegeoimages import FakeGeoImage
+from fake_geo_images.fakegeoimages import FakeGeoImage
 
 
 def test_standard_image_4bands():
