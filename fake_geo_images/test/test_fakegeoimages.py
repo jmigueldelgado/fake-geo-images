@@ -25,3 +25,16 @@ def test_image_3bands_nodata():
         ).create()
 
         assert np.all(data[2, :3, :3] == 1)
+
+
+def test_cog():
+    with tempfile.TemporaryDirectory() as td:
+        test_img, _ = FakeGeoImage(
+            300, 150, 4, "uint16", out_dir=Path(td), cog=True
+        ).create()
+
+        with rio.open(str(test_img)) as src:
+            profile = src.profile
+
+            assert profile["compress"] == "deflate"
+            assert profile["blockxsize"] == 128

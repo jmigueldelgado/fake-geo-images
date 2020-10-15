@@ -14,6 +14,7 @@ from scipy import signal
 import numpy as np
 
 from .logging import get_logger
+from .raster import to_cog
 
 logger = get_logger(__name__)
 
@@ -50,6 +51,7 @@ class FakeGeoImage:
         coord_ref_sys: int = 3857,
         nodata: Union[int, float] = 0,
         nodata_fill: int = 0,
+        cog: bool = False,
     ):
         """
         Args:
@@ -61,6 +63,7 @@ class FakeGeoImage:
             coord_ref_sys: EPSG identifier of used coordinate reference system (default 3837).
             nodata: Value representing nodata within each raster band, default is 0. If set to -1 no nodata value set.
             nodata_fill: number of no data pixels to set in top left image (in x and y).
+            cog: output is a cloud-optimized geotiff. Only makes sense for larger images where block size matters.
 
         Example:
             ```python
@@ -81,6 +84,7 @@ class FakeGeoImage:
             self.nodata = None
         else:
             self.nodata = nodata
+        self.cog = cog
 
     def add_img_pattern(self, seed: Optional[int]) -> np.ndarray:
         """
@@ -189,5 +193,8 @@ class FakeGeoImage:
                         logger.debug(
                             "Number of band descriptions does not match number of bands"
                         )
+
+        if self.cog:
+            to_cog(Path(filepath))
 
         return filepath, np.array(band_list)

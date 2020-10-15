@@ -1,5 +1,5 @@
 """
-Common raster handling methods shared between blocks
+Common raster handling methods
 """
 from pathlib import Path
 
@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 def to_cog(path_to_image: Path, profile: str = "deflate", **options) -> bool:
     """
-    Converts a GeoTIFF into a Cloud-optimized GeoTIFF
+    Converts a "normal" GeoTIFF into a Cloud-optimized GeoTIFF
     Args:
         path_to_image: path to GeoTIFF
         profile: compression profile
