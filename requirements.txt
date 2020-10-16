@@ -1,0 +1,12 @@
+numpy
+scipy
+rasterio
+scikit-image
+pytest
+pylint
+mypy
+pytest-mypy
+pytest-cov
+pytest-pylint
+black
+rio-cogeo
