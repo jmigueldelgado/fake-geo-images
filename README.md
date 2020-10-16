@@ -37,7 +37,7 @@ def test_ndvi():
 
     ndvi_image = ndvi(test_image)
 
-    with rio.open(str(test_image)) as src:
+    with rio.open(str(ndvi_image)) as src:
         ndvi_array = src.read()
         # NDVI only has one band of same size as input bands
         assert ndvi_array.shape == (1, 300, 150)
