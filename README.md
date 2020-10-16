@@ -11,7 +11,7 @@ geospatial images (so far geotiffs) in a parameterised way.
 
 ## Install package
 ```bash
-pip install image-similarity-measures
+pip install fake-geo-images
 ```
 
 ## Usage
