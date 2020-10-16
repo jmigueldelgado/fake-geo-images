@@ -48,7 +48,7 @@ class FakeGeoImage:
         num_bands: int,
         data_type: str,
         out_dir: Path = Path("."),
-        coord_ref_sys: int = 3857,
+        crs: int = 3857,
         nodata: Union[int, float] = 0,
         nodata_fill: int = 0,
         cog: bool = False,
@@ -60,7 +60,7 @@ class FakeGeoImage:
             num_bands: Number of image bands.
             data_type: Rasterio datatype as string.
             out_dir: Path where the image should be created (default ".").
-            coord_ref_sys: EPSG identifier of used coordinate reference system (default 3837).
+            crs: EPSG identifier of used coordinate reference system (default 3837).
             nodata: Value representing nodata within each raster band, default is 0. If set to -1 no nodata value set.
             nodata_fill: number of no data pixels to set in top left image (in x and y).
             cog: output is a cloud-optimized geotiff. Only makes sense for larger images where block size matters.
@@ -78,7 +78,7 @@ class FakeGeoImage:
         self.num_bands = num_bands
         self.data_type = data_type
         self.out_dir = out_dir
-        self.crs = coord_ref_sys
+        self.crs = crs
         self.nodata_fill = nodata_fill
         if nodata == -1:
             self.nodata = None

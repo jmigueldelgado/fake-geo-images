@@ -32,7 +32,7 @@ def test_ndvi():
     """
     # Create 4-band image simulating RGBN as needed for NDVI
     test_image, _ = FakeGeoImage(
-            300, 150, 4, "uint16", out_dir=Path("/tmp"), coord_ref_sys = 4326, nodata=0, nodata_fill=3, cog = False
+            300, 150, 4, "uint16", out_dir=Path("/tmp"), crs=4326, nodata=0, nodata_fill=3, cog = False
         )
 
     ndvi_image = ndvi(test_image)
