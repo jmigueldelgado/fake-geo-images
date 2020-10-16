@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Union, Optional
 
 import rasterio
-from rasterio import crs
+from rasterio import crs as rio_crs
 from rasterio.transform import from_origin
 import skimage.draw
 from scipy import signal
@@ -179,7 +179,7 @@ class FakeGeoImage:
             width=self.xsize,
             count=self.num_bands,
             dtype=str(band_list[0].dtype),
-            crs=crs.CRS.from_epsg(self.crs),
+            crs=rio_crs.CRS.from_epsg(self.crs),
             transform=transform,
             nodata=self.nodata,
         ) as out_img:
