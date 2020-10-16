@@ -24,28 +24,33 @@ def to_cog(path_to_image: Path, profile: str = "deflate", **options) -> bool:
     """
     logger.info("Now converting to COG")
     tmp_file_path = Path(str(path_to_image) + ".tmp")
-    path_to_image.rename(tmp_file_path)
+    # pylint: disable=broad-except
+    try:
+        path_to_image.rename(tmp_file_path)
 
-    # Format creation option (see gdalwarp `-co` option)
-    output_profile = cog_profiles.get(profile)
-    output_profile.update(dict(BIGTIFF="IF_SAFER"))
+        # Format creation option (see gdalwarp `-co` option)
+        output_profile = cog_profiles.get(profile)
+        output_profile.update(dict(BIGTIFF="IF_SAFER"))
 
-    # Dataset Open option (see gdalwarp `-oo` option)
-    config = dict(
-        GDAL_NUM_THREADS="ALL_CPUS",
-        GDAL_TIFF_INTERNAL_MASK=True,
-        GDAL_TIFF_OVR_BLOCKSIZE="128",
-    )
+        # Dataset Open option (see gdalwarp `-oo` option)
+        config = dict(
+            GDAL_NUM_THREADS="ALL_CPUS",
+            GDAL_TIFF_INTERNAL_MASK=True,
+            GDAL_TIFF_OVR_BLOCKSIZE="128",
+        )
 
-    cog_translate(
-        str(tmp_file_path),
-        str(path_to_image),
-        output_profile,
-        config=config,
-        in_memory=False,
-        quiet=False,
-        **options,
-    )
+        cog_translate(
+            str(tmp_file_path),
+            str(path_to_image),
+            output_profile,
+            config=config,
+            in_memory=False,
+            quiet=False,
+            **options,
+        )
+    except Exception:
+        # If anything goes wrong we still want to remove the tmp file
+        pass
     tmp_file_path.unlink()
 
     return True
