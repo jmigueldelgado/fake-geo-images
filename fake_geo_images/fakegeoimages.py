@@ -32,8 +32,7 @@ LC_CLASSES = {
 
 
 class FakeGeoImage:
-    # pylint: disable=E1137
-    # pylint: disable=R0913
+    # pylint: disable=too-many-arguments
     # pylint: disable=too-many-instance-attributes
     """
     Create synthetic GeoTIFF test image. An image created this way cannot recreate all characteristics of a
