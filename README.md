@@ -2,7 +2,7 @@
 A module to programmatically create geotiff images which can be used for unit tests.
 
 The underlying idea is that in order to write unit tests for geospatial image processsing algorithms, 
-it is necessary to have an actual input image. Organising these test images becomes a chore over time,
+it is necessary to have an actual input image file or array. Organising these test images becomes a chore over time,
 they should not be stored in git as they are large binary data and when stored outside, there always
 is the danger that they are not updated according to changes in the code repo.
 
@@ -21,6 +21,7 @@ In the following an example unit test for a hypothetical NDVI function.
 ```python
 import numpy as np
 import rasterio as rio
+from pathlib import Path
 
 from my_image_processing import ndvi
 from fake_geo_images.fakegeoimages import FakeGeoImage
@@ -31,7 +32,7 @@ def test_ndvi():
     """
     # Create 4-band image simulating RGBN as needed for NDVI
     test_image, _ = FakeGeoImage(
-            300, 150, 4, "uint16"
+            300, 150, 4, "uint16", out_dir=Path("/tmp"), coord_ref_sys = 4326, nodata=0, nodata_fill=3, cog = False
         )
 
     ndvi_image = ndvi(test_image)
