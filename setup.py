@@ -1,6 +1,6 @@
 import setuptools
 
-with open("docs/index.md", "r") as fh:
+with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
 setuptools.setup(
@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/up42/fake-geo-images",
-    packages=setuptools.find_packages(exclude=("test")),
+    packages=setuptools.find_packages(),
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
