@@ -59,7 +59,7 @@ class FakeGeoImage:
             ysize: Number of pixels in y-direction.
             num_bands: Number of image bands.
             data_type: Rasterio datatype as string.
-            out_dir: Path where the image should be created (default ".").
+            out_dir: Path where the image should be created. Defaults to a random id if not provided..
             crs: EPSG identifier of used coordinate reference system (default 3837).
             nodata: Value representing nodata within each raster band, default is 0. If set to -1 no nodata value set.
             nodata_fill: number of no data pixels to set in top left image (in x and y).
