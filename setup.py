@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="fake-geo-images",
-    version="0.1.0",
+    version="0.1.1",
     author="UP42",
     author_email="support@up42.com",
     description="Fake geospatial images for unit tests",
