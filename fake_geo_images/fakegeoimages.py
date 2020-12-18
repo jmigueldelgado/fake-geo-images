@@ -121,9 +121,16 @@ class FakeGeoImage:
 
             for class_idx, lc_class in enumerate(LC_CLASSES.values(), 1):
                 # Add Gaussian noise
-                mask_ar = np.random.normal(
-                    lc_class["avg"][band_idx], lc_class["std"][band_idx], image.shape
-                )
+                try:
+                    mask_ar = np.random.normal(
+                        lc_class["avg"][band_idx],
+                        lc_class["std"][band_idx],
+                        image.shape,
+                    )
+                except IndexError:
+                    mask_ar = np.random.normal(
+                        lc_class["avg"][-1], lc_class["std"][-1], image.shape
+                    )
                 data_ar[image == class_idx] = mask_ar[
                     image == class_idx
                 ]  # pylint: disable=unsubscriptable-object
