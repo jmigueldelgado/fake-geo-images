@@ -14,6 +14,11 @@ geospatial images (so far geotiffs) in a parameterised way.
 pip install fake-geo-images
 ```
 
+## Run tests
+```bash
+pytest
+```
+
 ## Usage
 
 In the following an example unit test for a hypothetical NDVI function.
