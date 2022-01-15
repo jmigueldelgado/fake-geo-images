@@ -5,7 +5,7 @@ parent_dir = Path(__file__).resolve().parent
 
 setup(
     name="fake-geo-images",
-    version="0.1.1",
+    version="0.1.2",
     author="UP42",
     author_email="support@up42.com",
     description="Fake geospatial images for unit tests",
@@ -22,5 +22,5 @@ setup(
         "Intended Audience :: Developers",
     ],
     install_requires=parent_dir.joinpath("requirements.txt").read_text(encoding="utf-8").splitlines(),
-    python_requires=">=3.6, <3.9",
+    python_requires=">=3.6",
 )
