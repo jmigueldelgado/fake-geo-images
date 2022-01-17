@@ -24,7 +24,7 @@ jobs:
           command: python -m pip install --user packaging twine
       - run:
           name: Build package
-          command: python setup.py sdist bdist_wheel
+          command: python -m setup.py sdist bdist_wheel
       - run:
           name: Upload to PyPi
           command: twine upload dist/*
