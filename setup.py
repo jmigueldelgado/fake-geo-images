@@ -21,6 +21,8 @@ setup(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
     ],
-    install_requires=parent_dir.joinpath("requirements.txt").read_text(encoding="utf-8").splitlines(),
+    install_requires=parent_dir.joinpath("requirements.txt")
+    .read_text(encoding="utf-8")
+    .splitlines(),
     python_requires=">=3.6",
 )
