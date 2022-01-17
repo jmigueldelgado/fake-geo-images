@@ -1,0 +1,50 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Install requirements
+          command: |
+            pip install -r requirements.txt
+            pip install -r requirements-dev.txt
+      - run:
+          name: Runnning tests
+          command: python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports
+  deploy:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Installing packaging utils
+          command: python -m pip install --user packaging twine
+      - run:
+          name: Build package
+          command: python setup.py sdist bdist_wheel
+      - run:
+          name: Upload to PyPi
+          command: twine upload dist/*
+
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test
+      - hold_before_deploy:
+          type: approval
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - hold_before_deploy
+          filters:
+            branches:
+              only: master
