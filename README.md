@@ -37,7 +37,12 @@ from rasterio.transform import from_origin
 from my_image_processing import ndvi
 from fake_geo_images.fakegeoimages import FakeGeoImage
 
-test_image, _ = FakeGeoImage(
+def test_ndvi():
+    """
+    A unit test if an NDVI method works in general
+    """
+    # Create 4-band image simulating RGBN as needed for NDVI
+    test_image, _ = FakeGeoImage(
         300,
         150,
         4,
