@@ -33,6 +33,7 @@ import numpy as np
 import rasterio as rio
 from pathlib import Path
 
+from rasterio.transform import from_origin
 from my_image_processing import ndvi
 from fake_geo_images.fakegeoimages import FakeGeoImage
 
@@ -42,8 +43,16 @@ def test_ndvi():
     """
     # Create 4-band image simulating RGBN as needed for NDVI
     test_image, _ = FakeGeoImage(
-            300, 150, 4, "uint16", out_dir=Path("/tmp"), crs=4326, nodata=0, nodata_fill=3, cog = False
-        ).create(seed=42)
+        300,
+        150,
+        4,
+        "uint16",
+        out_dir=Path("/tmp"),
+        crs=4326,
+        nodata=0,
+        nodata_fill=3,
+        cog=False,
+    ).create(seed=42, transform=from_origin(13.428596, 52.494384, 0.000006, 0.000006))
 
     ndvi_image = ndvi(test_image)
 
