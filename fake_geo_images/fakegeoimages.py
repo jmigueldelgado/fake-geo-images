@@ -4,7 +4,7 @@ Utility class to generate synthetic images, especially useful for testing purpos
 
 import uuid
 from pathlib import Path
-from typing import Union, Optional, List
+from typing import Union, List
 
 import rasterio
 from rasterio import crs as rio_crs
@@ -85,7 +85,7 @@ class FakeGeoImage:
             self.nodata = nodata
         self.cog = cog
 
-    def add_img_pattern(self, seed: Optional[int]) -> List[np.ndarray]:
+    def add_img_pattern(self, seed: Union[int, None]) -> List[np.ndarray]:
         """
         Simulate a five classes optical image.
 
@@ -144,10 +144,10 @@ class FakeGeoImage:
 
     def create(
         self,
-        seed: Optional[int] = None,
+        seed: Union[int, None] = None,
         transform: rasterio.Affine = from_origin(1470996, 6914001, 2.0, 2.0),
-        file_name: str = None,
-        band_desc: list = None,
+        file_name: Union[str, None] = None,
+        band_desc: Union[list, None] = None,
     ) -> tuple:
         """
         Creates a synthethic image file with a given seed. Returns a tuple with
