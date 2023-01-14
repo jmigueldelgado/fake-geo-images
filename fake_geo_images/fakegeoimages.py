@@ -62,7 +62,7 @@ class FakeGeoImage:
             crs: EPSG identifier of used coordinate reference system (default 3837).
             nodata: Value representing nodata within each raster band, default is 0. If set to -1 no nodata value set.
             nodata_fill: number of no data pixels to set in top left image (in x and y).
-            cog: output is a cloud-optimized geotiff. Only makes sense for larger images where block size matters.
+            cog: Output is a cloud-optimized geotiff. Only makes sense for larger images where block size matters.
 
         Example:
             ```python
