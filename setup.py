@@ -5,7 +5,7 @@ parent_dir = Path(__file__).resolve().parent
 
 setup(
     name="fake-geo-images",
-    version="0.1.3",
+    version="0.1.4",
     author="UP42",
     author_email="support@up42.com",
     description="Fake geospatial images for unit tests",
