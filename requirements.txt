@@ -2,4 +2,4 @@ numpy
 scipy
 rasterio
 scikit-image
-rio-cogeo
+rio-cogeo==3.4.1

@@ -1,6 +1,6 @@
 pytest
-pylint
-mypy
+pylint==2.15.10
+mypy==0.991
 pytest-mypy
 pytest-cov
 pytest-pylint
