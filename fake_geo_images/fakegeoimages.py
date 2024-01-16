@@ -102,7 +102,7 @@ class FakeGeoImage:
             (self.ysize, self.xsize),
             max_shapes=50,
             min_shapes=25,
-            multichannel=False,
+            channel_axis=None,
             allow_overlap=True,
             random_seed=seed,
         )
