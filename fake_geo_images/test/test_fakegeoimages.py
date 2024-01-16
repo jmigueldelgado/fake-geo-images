@@ -37,4 +37,4 @@ def test_cog():
             profile = src.profile
 
             assert profile["compress"] == "deflate"
-            assert profile["blockxsize"] == 128
+            assert profile["blockxsize"] == 512
