@@ -30,14 +30,14 @@ def to_cog(path_to_image: Path, profile: str = "deflate", **options) -> bool:
 
         # Format creation option (see gdalwarp `-co` option)
         output_profile = cog_profiles.get(profile)
-        output_profile.update(dict(BIGTIFF="IF_SAFER"))
+        output_profile.update({"BIGTIFF": "IF_SAFER"})
 
         # Dataset Open option (see gdalwarp `-oo` option)
-        config = dict(
-            GDAL_NUM_THREADS="ALL_CPUS",
-            GDAL_TIFF_INTERNAL_MASK=True,
-            GDAL_TIFF_OVR_BLOCKSIZE="128",
-        )
+        config = {
+            "GDAL_NUM_THREADS": "ALL_CPUS",
+            "GDAL_TIFF_INTERNAL_MASK": True,
+            "GDAL_TIFF_OVR_BLOCKSIZE": "128",
+        }
 
         cog_translate(
             str(tmp_file_path),
