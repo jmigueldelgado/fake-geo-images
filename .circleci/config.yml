@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
@@ -16,7 +16,7 @@ jobs:
           command: make test
   deploy:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
