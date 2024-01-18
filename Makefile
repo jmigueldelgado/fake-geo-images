@@ -10,5 +10,5 @@ package:
 	twine check dist/*
 
 upload:
-	twine upload --skip-existing -u __token__ -p $(TWINE_PASSWORD) dist/*
+	twine upload --skip-existing -u __token__ -p $(TWINE_TOKEN) dist/*
 
