@@ -11,4 +11,3 @@ package:
 
 upload:
 	twine upload --skip-existing -u __token__ -p $(TWINE_TOKEN) dist/*
-
