@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "fake-geo-images"
+  title: Fake Geo Images
+  namespace: up42
+  annotations:
+    circleci.com/project-slug: "github/up42/fake-geo-images"
+    github.com/project-slug: "up42/fake-geo-images"
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-label-selector: "app=fake-geo-images"
+spec:
+  type: service
+  owner: group:up42/processing-platform-team
+  lifecycle: production
+  system: up42/processing-platform
+  
