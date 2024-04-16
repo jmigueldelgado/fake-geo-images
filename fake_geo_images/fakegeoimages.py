@@ -104,7 +104,7 @@ class FakeGeoImage:
             min_shapes=25,
             channel_axis=None,
             allow_overlap=True,
-            random_seed=seed,
+            rng=seed,
         )
         # Assign shape values to output classes
         image[image < 55] = 1
