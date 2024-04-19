@@ -31,7 +31,7 @@ LC_CLASSES = {
 }
 
 
-class FakeGeoImage:
+class GeoMockImage:
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-instance-attributes
     """

@@ -1,8 +1,8 @@
-pytest>=7.4.4
-pylint>=3.0.3
-mypy>=1.8.0
-pytest-mypy>=0.10.3
-pytest-cov>=4.1.0
-pytest-pylint>=0.21.0
-black>=23.12.1
-coverage-badge>=1.1.0
+pytest
+pylint
+mypy
+pytest-mypy
+pytest-cov
+pytest-pylint
+black
+coverage-badge
