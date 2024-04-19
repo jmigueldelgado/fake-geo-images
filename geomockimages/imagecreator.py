@@ -32,8 +32,6 @@ LC_CLASSES = {
 
 
 class GeoMockImage:
-    # pylint: disable=too-many-arguments
-    # pylint: disable=too-many-instance-attributes
     """
     Create synthetic GeoTIFF test image. An image created this way cannot recreate all characteristics of a
     real geospatial image, but if cleverly created can avoid having to use golden files for a
@@ -131,9 +129,7 @@ class GeoMockImage:
                     mask_ar = np.random.normal(
                         lc_class["avg"][-1], lc_class["std"][-1], image.shape
                     )
-                data_ar[image == class_idx] = mask_ar[
-                    image == class_idx
-                ]  # pylint: disable=unsubscriptable-object
+                data_ar[image == class_idx] = mask_ar[image == class_idx]
             # Apply median filter to simulate spatial autocorrelation
             data_ar = (signal.medfilt(data_ar)).astype(self.data_type)
             data_ar = np.clip(data_ar, 1, None)
