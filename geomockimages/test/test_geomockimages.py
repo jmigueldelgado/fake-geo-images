@@ -7,7 +7,10 @@ import rasterio as rio
 from geomockimages.imagecreator import GeoMockImage
 
 
-def test_image_4bands():
+def test_optical_image_4bands():
+    """
+    Test for a 4-band (BGRN) optical image
+    """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(6, 4, 4, "uint16", out_dir=Path(td)).create()
 
@@ -18,13 +21,40 @@ def test_image_4bands():
             assert data.shape == (4, 4, 6)
 
 
-def test_image_3bands_nodata():
+def test_optical_image_3bands_nodata():
+    """
+    Test for a 3-band (RGB) optical image with some nodata
+    """
     with tempfile.TemporaryDirectory() as td:
         _, data = GeoMockImage(
             6, 4, 4, "uint16", out_dir=Path(td), nodata=1, nodata_fill=3
         ).create()
 
         assert np.all(data[2, :3, :3] == 1)
+
+
+def test_optical_image_1band():
+    """
+    Test for a 1-band (panchromatic) optical image
+    """
+
+    assert False
+
+
+def test_sar_image_1band():
+    """
+    Test for a 1-band (single pol) SAR image such as those from ICEYE, Capella or Umbra
+    """
+
+    assert False
+
+
+def test_sar_image_2band():
+    """
+    Test for a 2-band (dual pol) SAR image such as those Sentine-1
+    """
+
+    assert False
 
 
 def test_cog():
