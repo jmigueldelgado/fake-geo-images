@@ -12,7 +12,9 @@ def test_optical_image_4bands():
     Test for a 4-band (BGRN) optical image
     """
     with tempfile.TemporaryDirectory() as td:
-        test_img, data = GeoMockImage(6, 4, 4, "uint16", out_dir=Path(td)).create()
+        test_img, data = GeoMockImage(
+            6, 4, 4, "uint16", "optical", out_dir=Path(td)
+        ).create()
 
         with rio.open(str(test_img)) as src:
             data_from_file = src.read()
@@ -37,6 +39,10 @@ def test_optical_image_1band():
     """
     Test for a 1-band (panchromatic) optical image
     """
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            5, 4, 1, "uint16", "optical", out_dir=Path(td)
+        ).create()
 
     assert False
 
@@ -45,14 +51,22 @@ def test_sar_image_1band():
     """
     Test for a 1-band (single pol) SAR image such as those from ICEYE, Capella or Umbra
     """
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            5, 6, 1, "uint16", "sar", out_dir=Path(td)
+        ).create()
 
     assert False
 
 
-def test_sar_image_2band():
+def test_sar_image_2band_nodata():
     """
-    Test for a 2-band (dual pol) SAR image such as those Sentine-1
+    Test for a 2-band (dual pol) SAR image such as those Sentine-1 with some nodata
     """
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            5, 3, 2, "uint16", "sar", out_dir=Path(td)
+        ).create()
 
     assert False
 
