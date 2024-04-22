@@ -44,6 +44,7 @@ class GeoMockImage:
         ysize: int,
         num_bands: int,
         data_type: str,
+        image_type: str = "optical",
         out_dir: Path = Path("."),
         crs: int = 3857,
         nodata: Union[int, float] = 0,
