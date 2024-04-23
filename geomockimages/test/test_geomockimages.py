@@ -9,7 +9,7 @@ from geomockimages.imagecreator import GeoMockImage
 
 def test_optical_image_4bands():
     """
-    Test for a 4-band (BGRN) optical image
+    Test for a 4-band (RGBN) optical image
     """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
@@ -61,12 +61,48 @@ def test_sar_image_1band():
 
 def test_sar_image_2band_nodata():
     """
-    Test for a 2-band (dual pol) SAR image such as those Sentine-1 with some nodata
+    Test for a 2-band (dual pol) SAR image such as Sentinei-1 with some nodata
     """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
             5, 3, 2, "uint16", "sar", out_dir=Path(td)
         ).create()
+
+    assert False
+
+
+def test_sar_image_1band_pair():
+    """
+    Test for a pair of SAR 1-band amplitude images that can be used e.g. for change detection
+    The cretaed pair has noch changes.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            5, 3, 1, "uint16", "sar", out_dir=Path(td)
+        ).create(noise_seed=5, noise_intensity=0.5)
+
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            5, 3, 1, "uint16", "sar", out_dir=Path(td)
+        ).create(noise_seed=3, noise_intensity=0.5)
+
+    assert False
+
+
+def test_sar_image_1band_pair_change():
+    """
+    Test for a pair of SAR 1-band amplitude images that can be used e.g. for change detection
+    The cretaed pair has noch changes.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            15, 8, 1, "uint16", "sar", out_dir=Path(td)
+        ).create(noise_seed=5, noise_intensity=0.5)
+
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            15, 8, 1, "uint16", "sar", out_dir=Path(td)
+        ).create(noise_seed=3, noise_intensity=0.5, change_pixels=12)
 
     assert False
 

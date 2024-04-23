@@ -87,6 +87,7 @@ class GeoMockImage:
         self.ysize = ysize
         self.num_bands = num_bands
         self.data_type = data_type
+        self.image_type = image_type
         self.out_dir = out_dir
         self.crs = crs
         self.nodata_fill = nodata_fill
@@ -96,7 +97,13 @@ class GeoMockImage:
             self.nodata = nodata
         self.cog = cog
 
-    def add_img_pattern(self, seed: Union[int, None]) -> List[np.ndarray]:
+    def add_img_pattern(
+        self,
+        seed: Union[int, None],
+        noise_seed: Union[int, None],
+        noise_intensity: Union[float, None],
+        change_pixels: Union[int, None],
+    ) -> List[np.ndarray]:
         """
         Simulate a five classes optical image.
 
@@ -154,6 +161,9 @@ class GeoMockImage:
     def create(
         self,
         seed: Union[int, None] = None,
+        noise_seed: Union[int, None] = None,
+        noise_intensity: Union[float, None] = None,
+        change_pixels: Union[int, None] = None,
         transform: rasterio.Affine = from_origin(1470996, 6914001, 2.0, 2.0),
         file_name: Union[str, None] = None,
         band_desc: Union[list, None] = None,
@@ -165,7 +175,9 @@ class GeoMockImage:
         another Affine transform if needed.
 
         Arguments:
+            image_type: either 'optical' or 'SAR', optical by default
             seed: A random seed number. Ensures reproducibility.
+            noise_seed: used when multiple images with the same seed are created that have slight differences e.g. when simulating a time series
             transform: An Affine transform for the image to be generated.
             file_name: A name for the created file.
             band_desc: List with descriptions (strings) for each band.
@@ -173,7 +185,9 @@ class GeoMockImage:
         Returns:
             Path to the output image, numpy array of image values.
         """
-        band_list = self.add_img_pattern(seed)
+        band_list = self.add_img_pattern(
+            seed, noise_seed, noise_intensity, change_pixels
+        )
 
         if not file_name:
             filepath = self.out_dir.joinpath(str(uuid.uuid4()) + ".tif")
