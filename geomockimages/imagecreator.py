@@ -105,10 +105,15 @@ class GeoMockImage:
         change_pixels: Union[int, None],
     ) -> List[np.ndarray]:
         """
-        Simulate a five classes optical image.
+        Simulate a five classes optical or SAR image.
+        Creates reasonable results for optical images with 3 or 4 bands and SAR images with 1 or 2 bands polorisations.
+        The method does also work with any number of bands, but the results will be less realistic.
 
         Args:
             seed: A random seed number. Ensures reproducibility.
+            noise_seed: A random seed number for noise
+            noise_intensity: multiplier for noise
+            change_pixels: number of pixels that are changed from the original value. Usable for change detection purposes
 
         Returns:
             List of numpy array bands representing simulated image.
