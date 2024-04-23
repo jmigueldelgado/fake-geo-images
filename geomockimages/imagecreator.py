@@ -19,7 +19,7 @@ from .raster import to_cog
 logger = get_logger(__name__)
 
 # Define standard land cover classes and representative stats wrt radiance for a 4-band product
-LC_CLASSES = {
+LC_CLASSES_OPTICAL = {
     "water": {"avg": [170, 300, 450, 150], "std": [10, 10, 10, 10]},
     "bare_ground": {"avg": [600, 600, 600, 900], "std": [100, 100, 100, 100]},
     "built_up": {"avg": [800, 800, 800, 1000], "std": [150, 150, 150, 150]},
@@ -27,6 +27,18 @@ LC_CLASSES = {
     "non-forest_vegetation": {
         "avg": [300, 500, 500, 1100],
         "std": [100, 100, 100, 100],
+    },
+}
+
+# Define standard land cover classes and representative stats wrt C-band HH and HV amplitude as found in Sentinel-1
+LC_CLASSES_SAR = {
+    "water": {"avg": [30, 50], "std": [10, 10]},
+    "bare_ground": {"avg": [60, 140], "std": [30, 50]},
+    "built_up": {"avg": [140, 300], "std": [50, 150]},
+    "forest": {"avg": [90, 180], "std": [30, 40]},
+    "non-forest_vegetation": {
+        "avg": [70, 140],
+        "std": [30, 80],
     },
 }
 
@@ -118,7 +130,7 @@ class GeoMockImage:
         while band_idx < self.num_bands:
             data_ar = np.zeros_like(image, dtype=self.data_type)
 
-            for class_idx, lc_class in enumerate(LC_CLASSES.values(), 1):
+            for class_idx, lc_class in enumerate(LC_CLASSES_OPTICAL.values(), 1):
                 # Add Gaussian noise
                 try:
                     mask_ar = np.random.normal(
