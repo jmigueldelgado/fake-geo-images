@@ -10,7 +10,6 @@ __pycache__
 .vscode
 **/scratch
 .ropeproject/
-notebooks/
 log*.txt
 __MACOSX
 prof
