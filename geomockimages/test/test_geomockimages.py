@@ -42,9 +42,11 @@ def test_optical_image_1band():
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
             5, 4, 1, "uint16", "optical", out_dir=Path(td)
-        ).create()
+        ).create(seed=10, noise_seed=6)
 
-    assert False
+    test_ar = np.array([[405, 286], [405, 328], [429, 337]])
+
+    assert np.array_equal(test_ar, data[0][0:3, 1:3])
 
 
 def test_sar_image_1band():
@@ -53,9 +55,10 @@ def test_sar_image_1band():
     """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
-            5, 6, 1, "uint16", "sar", out_dir=Path(td)
+            5, 6, 1, "uint16", "SAR", out_dir=Path(td)
         ).create()
 
+    # The image should have similar characteristics like real image e.g. regarding speckle
     assert False
 
 
@@ -65,9 +68,10 @@ def test_sar_image_2band_nodata():
     """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
-            5, 3, 2, "uint16", "sar", out_dir=Path(td)
+            5, 3, 2, "uint16", "SAR", out_dir=Path(td)
         ).create()
 
+    # The image should have similar characteristics like real image e.g. regarding speckle
     assert False
 
 
@@ -78,14 +82,15 @@ def test_sar_image_1band_pair():
     """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
-            5, 3, 1, "uint16", "sar", out_dir=Path(td)
+            5, 3, 1, "uint16", "SAR", out_dir=Path(td)
         ).create(noise_seed=5, noise_intensity=0.5)
 
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
-            5, 3, 1, "uint16", "sar", out_dir=Path(td)
+            5, 3, 1, "uint16", "SAR", out_dir=Path(td)
         ).create(noise_seed=3, noise_intensity=0.5)
 
+    # The two images should appear like they were taken at different dates from the same area
     assert False
 
 
@@ -96,13 +101,16 @@ def test_sar_image_1band_pair_change():
     """
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
-            15, 8, 1, "uint16", "sar", out_dir=Path(td)
+            15, 8, 1, "uint16", "SAR", out_dir=Path(td)
         ).create(noise_seed=5, noise_intensity=0.5)
 
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
-            15, 8, 1, "uint16", "sar", out_dir=Path(td)
+            15, 8, 1, "uint16", "SAR", out_dir=Path(td)
         ).create(noise_seed=3, noise_intensity=0.5, change_pixels=12)
+
+    # The two images should appear like they were taken at different dates from the same area
+    # Change could e.g. be a new building
 
     assert False
 

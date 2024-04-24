@@ -101,8 +101,8 @@ class GeoMockImage:
         self,
         seed: Union[int, None],
         noise_seed: Union[int, None],
-        noise_intensity: Union[float, None],
-        change_pixels: Union[int, None],
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
     ) -> List[np.ndarray]:
         """
         Simulate a five classes optical or SAR image.
@@ -118,9 +118,6 @@ class GeoMockImage:
         Returns:
             List of numpy array bands representing simulated image.
         """
-        if seed is not None:
-            np.random.seed(seed)
-
         image, _ = skimage.draw.random_shapes(
             (self.ysize, self.xsize),
             max_shapes=50,
@@ -142,17 +139,27 @@ class GeoMockImage:
         while band_idx < self.num_bands:
             data_ar = np.zeros_like(image, dtype=self.data_type)
 
-            for class_idx, lc_class in enumerate(LC_CLASSES_OPTICAL.values(), 1):
+            if self.image_type == "optical":
+                lc_values = enumerate(LC_CLASSES_OPTICAL.values(), 1)
+            elif self.image_type == "SAR":
+                lc_values = enumerate(LC_CLASSES_SAR.values(), 1)
+            else:
+                raise Exception("Only optical and SAR images are supported")
+
+            for class_idx, lc_class in lc_values:
                 # Add Gaussian noise
                 try:
-                    mask_ar = np.random.normal(
+                    mask_ar = np.random.default_rng(seed=noise_seed).normal(
                         lc_class["avg"][band_idx],
-                        lc_class["std"][band_idx],
+                        lc_class["std"][band_idx] * noise_intensity,
                         image.shape,
                     )
+                    # import pdb; pdb.set_trace()
                 except IndexError:
-                    mask_ar = np.random.normal(
-                        lc_class["avg"][-1], lc_class["std"][-1], image.shape
+                    mask_ar = np.random.default_rng(seed=noise_seed).normal(
+                        lc_class["avg"][-1],
+                        lc_class["std"][-1] * noise_intensity,
+                        image.shape,
                     )
                 data_ar[image == class_idx] = mask_ar[image == class_idx]
             # Apply median filter to simulate spatial autocorrelation
@@ -167,14 +174,14 @@ class GeoMockImage:
         self,
         seed: Union[int, None] = None,
         noise_seed: Union[int, None] = None,
-        noise_intensity: Union[float, None] = None,
-        change_pixels: Union[int, None] = None,
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
         transform: rasterio.Affine = from_origin(1470996, 6914001, 2.0, 2.0),
         file_name: Union[str, None] = None,
         band_desc: Union[list, None] = None,
     ) -> tuple:
         """
-        Creates a synthethic image file with a given seed. Returns a tuple with
+        Creates a synthetic image file with a given seed. Returns a tuple with
         (path to file, array).
         Transform is set by default to `from_origin(1470996, 6914001, 2.0, 2.0)`. Pass
         another Affine transform if needed.
