@@ -93,20 +93,22 @@ def test_sar_image_2band_nodata():
 def test_sar_image_1band_pair():
     """
     Test for a pair of SAR 1-band amplitude images that can be used e.g. for change detection
-    The cretaed pair has noch changes.
+    The created pair has no real changes, only different noise.
     """
     with tempfile.TemporaryDirectory() as td:
-        test_img, data = GeoMockImage(
-            5, 3, 1, "uint16", "SAR", out_dir=Path(td)
-        ).create(noise_seed=5, noise_intensity=0.5)
+        test_img1, data1 = GeoMockImage(
+            10, 5, 1, "uint16", "SAR", out_dir=Path(td)
+        ).create(seed=4, noise_seed=5, noise_intensity=2.0)
 
     with tempfile.TemporaryDirectory() as td:
-        test_img, data = GeoMockImage(
-            5, 3, 1, "uint16", "SAR", out_dir=Path(td)
-        ).create(noise_seed=3, noise_intensity=0.5)
+        test_img2, data2 = GeoMockImage(
+            10, 5, 1, "uint16", "SAR", out_dir=Path(td)
+        ).create(seed=4, noise_seed=3, noise_intensity=2.0)
 
     # The two images should appear like they were taken at different dates from the same area
-    assert False
+    diff = data1.astype(int) - data2.astype(int)
+    assert (np.abs(diff)).max() < 150
+    assert np.abs(np.sum(diff)) < 1000
 
 
 def test_cog():
