@@ -18,3 +18,4 @@ prof
 *site
 coverage.xml
 *.tif*
+.ipynb_checkpoints/
