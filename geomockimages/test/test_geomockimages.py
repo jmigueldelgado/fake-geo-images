@@ -77,10 +77,17 @@ def test_sar_image_2band_nodata():
     with tempfile.TemporaryDirectory() as td:
         test_img, data = GeoMockImage(
             5, 3, 2, "uint16", "SAR", out_dir=Path(td)
-        ).create()
+        ).create(
+            seed=22,
+            noise_intensity=2.0,
+        )
 
-    # The image should have similar characteristics like real image e.g. regarding speckle
-    assert False
+        with rio.open(str(test_img)) as src:
+            data_from_file = src.read()
+            assert np.array_equal(data, data_from_file)
+            assert data.max() < 500
+            assert data.dtype == np.uint16
+            assert data.shape == (2, 3, 5)
 
 
 def test_sar_image_1band_pair():
