@@ -10,7 +10,6 @@ __pycache__
 .vscode
 **/scratch
 .ropeproject/
-notebooks/
 log*.txt
 __MACOSX
 prof
@@ -18,3 +17,5 @@ prof
 *dist
 *site
 coverage.xml
+*.tif*
+.ipynb_checkpoints/

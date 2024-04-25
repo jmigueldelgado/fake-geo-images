@@ -19,7 +19,7 @@ from .raster import to_cog
 logger = get_logger(__name__)
 
 # Define standard land cover classes and representative stats wrt radiance for a 4-band product
-LC_CLASSES = {
+LC_CLASSES_OPTICAL = {
     "water": {"avg": [170, 300, 450, 150], "std": [10, 10, 10, 10]},
     "bare_ground": {"avg": [600, 600, 600, 900], "std": [100, 100, 100, 100]},
     "built_up": {"avg": [800, 800, 800, 1000], "std": [150, 150, 150, 150]},
@@ -27,6 +27,18 @@ LC_CLASSES = {
     "non-forest_vegetation": {
         "avg": [300, 500, 500, 1100],
         "std": [100, 100, 100, 100],
+    },
+}
+
+# Define standard land cover classes and representative stats wrt C-band HH and HV amplitude as found in Sentinel-1
+LC_CLASSES_SAR = {
+    "water": {"avg": [30, 50], "std": [10, 10]},
+    "bare_ground": {"avg": [60, 140], "std": [30, 50]},
+    "built_up": {"avg": [140, 300], "std": [50, 150]},
+    "forest": {"avg": [90, 180], "std": [30, 40]},
+    "non-forest_vegetation": {
+        "avg": [70, 140],
+        "std": [30, 80],
     },
 }
 
@@ -44,6 +56,7 @@ class GeoMockImage:
         ysize: int,
         num_bands: int,
         data_type: str,
+        image_type: str = "optical",
         out_dir: Path = Path("."),
         crs: int = 3857,
         nodata: Union[int, float] = 0,
@@ -74,6 +87,7 @@ class GeoMockImage:
         self.ysize = ysize
         self.num_bands = num_bands
         self.data_type = data_type
+        self.image_type = image_type
         self.out_dir = out_dir
         self.crs = crs
         self.nodata_fill = nodata_fill
@@ -83,19 +97,27 @@ class GeoMockImage:
             self.nodata = nodata
         self.cog = cog
 
-    def add_img_pattern(self, seed: Union[int, None]) -> List[np.ndarray]:
+    def add_img_pattern(
+        self,
+        seed: Union[int, None],
+        noise_seed: Union[int, None],
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
+    ) -> List[np.ndarray]:
         """
-        Simulate a five classes optical image.
+        Simulate a five classes optical or SAR image.
+        Creates reasonable results for optical images with 3 or 4 bands and SAR images with 1 or 2 bands polorisations.
+        The method does also work with any number of bands, but the results will be less realistic.
 
         Args:
             seed: A random seed number. Ensures reproducibility.
+            noise_seed: A random seed number for noise
+            noise_intensity: multiplier for noise
+            change_pixels: number of pixels that are changed from the original value. Usable for change detection purposes
 
         Returns:
             List of numpy array bands representing simulated image.
         """
-        if seed is not None:
-            np.random.seed(seed)
-
         image, _ = skimage.draw.random_shapes(
             (self.ysize, self.xsize),
             max_shapes=50,
@@ -117,17 +139,27 @@ class GeoMockImage:
         while band_idx < self.num_bands:
             data_ar = np.zeros_like(image, dtype=self.data_type)
 
-            for class_idx, lc_class in enumerate(LC_CLASSES.values(), 1):
+            if self.image_type == "optical":
+                lc_values = enumerate(LC_CLASSES_OPTICAL.values(), 1)
+            elif self.image_type == "SAR":
+                lc_values = enumerate(LC_CLASSES_SAR.values(), 1)
+            else:
+                raise Exception("Only optical and SAR images are supported")
+
+            for class_idx, lc_class in lc_values:
                 # Add Gaussian noise
                 try:
-                    mask_ar = np.random.normal(
+                    mask_ar = np.random.default_rng(seed=noise_seed).normal(
                         lc_class["avg"][band_idx],
-                        lc_class["std"][band_idx],
+                        lc_class["std"][band_idx] * noise_intensity,
                         image.shape,
                     )
+                    # import pdb; pdb.set_trace()
                 except IndexError:
-                    mask_ar = np.random.normal(
-                        lc_class["avg"][-1], lc_class["std"][-1], image.shape
+                    mask_ar = np.random.default_rng(seed=noise_seed).normal(
+                        lc_class["avg"][-1],
+                        lc_class["std"][-1] * noise_intensity,
+                        image.shape,
                     )
                 data_ar[image == class_idx] = mask_ar[image == class_idx]
             # Apply median filter to simulate spatial autocorrelation
@@ -141,18 +173,23 @@ class GeoMockImage:
     def create(
         self,
         seed: Union[int, None] = None,
+        noise_seed: Union[int, None] = None,
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
         transform: rasterio.Affine = from_origin(1470996, 6914001, 2.0, 2.0),
         file_name: Union[str, None] = None,
         band_desc: Union[list, None] = None,
     ) -> tuple:
         """
-        Creates a synthethic image file with a given seed. Returns a tuple with
+        Creates a synthetic image file with a given seed. Returns a tuple with
         (path to file, array).
         Transform is set by default to `from_origin(1470996, 6914001, 2.0, 2.0)`. Pass
         another Affine transform if needed.
 
         Arguments:
+            image_type: either 'optical' or 'SAR', optical by default
             seed: A random seed number. Ensures reproducibility.
+            noise_seed: used when multiple images with the same seed are created that have slight differences e.g. when simulating a time series
             transform: An Affine transform for the image to be generated.
             file_name: A name for the created file.
             band_desc: List with descriptions (strings) for each band.
@@ -160,7 +197,9 @@ class GeoMockImage:
         Returns:
             Path to the output image, numpy array of image values.
         """
-        band_list = self.add_img_pattern(seed)
+        band_list = self.add_img_pattern(
+            seed, noise_seed, noise_intensity, change_pixels
+        )
 
         if not file_name:
             filepath = self.out_dir.joinpath(str(uuid.uuid4()) + ".tif")
