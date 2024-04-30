@@ -154,7 +154,6 @@ class GeoMockImage:
                         lc_class["std"][band_idx] * noise_intensity,
                         image.shape,
                     )
-                    # import pdb; pdb.set_trace()
                 except IndexError:
                     mask_ar = np.random.default_rng(seed=noise_seed).normal(
                         lc_class["avg"][-1],
@@ -167,6 +166,57 @@ class GeoMockImage:
             data_ar = np.clip(data_ar, 1, None)
             bands.append(data_ar)
             band_idx += 1
+
+            if change_pixels > 0:
+                bands = self.add_change_pixels(
+                    seed=seed,
+                    noise_intensity=noise_intensity,
+                    change_pixels=change_pixels,
+                )
+
+        return bands
+
+    def get_change_spot_sizes(self, change_pixels: int) -> List[int]:
+        """
+        Args:
+            change_pixels: number of pixels that are changed from the original value. Usable for change detection purposes
+        Returns:
+            List of change spot sizes.
+        """
+        # change spots can consist of 4..change_pixels pixels.
+        rng = np.random.default_rng()
+        pixels_left = change_pixels
+        change_patches = []
+        while pixels_left > 0:
+            patch_size = rng.integers(1, 11)
+            if pixels_left - patch_size < 0:
+                patch_size = pixels_left
+                pixels_left = 0
+            change_patches.append(patch_size)
+            pixels_left -= patch_size
+
+        return change_patches
+
+    def add_change_pixels(
+        self,
+        seed: Union[int, None],
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
+    ) -> List[np.ndarray]:
+        """
+        Args:
+            seed: A random seed number. Ensures reproducibility.
+            noise_seed: A random seed number for noise
+            noise_intensity: multiplier for noise
+            change_pixels: number of pixels that are changed from the original value. Usable for change detection purposes
+        Returns:
+            List of numpy array bands representing simulated image.
+
+        """
+        change_spots = self.get_change_spot_sizes()
+        print(change_spots)
+
+        bands = None
 
         return bands
 

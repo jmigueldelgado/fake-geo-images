@@ -111,6 +111,42 @@ def test_sar_image_1band_pair():
     assert np.abs(np.sum(diff)) < 1000
 
 
+def test_sar_image_1band_pair_change():
+    """
+    Test for a pair of SAR 1-band amplitude images that can be used e.g. for change detection
+    The cretaed pair has noch changes.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            30, 20, 1, "uint16", "SAR", out_dir=Path(td)
+        ).create(seed=12, noise_seed=5, noise_intensity=0.01)
+
+    with tempfile.TemporaryDirectory() as td:
+        test_img, data = GeoMockImage(
+            30, 20, 1, "uint16", "SAR", out_dir=Path(td)
+        ).create(seed=12, noise_seed=3, noise_intensity=0.01, change_pixels=12)
+
+    # The two images should appear like they were taken at different dates from the same area
+    # Change could e.g. be a new building
+
+    # Check if for 12 pixels there is a significant difference between the two images
+
+    assert False
+
+
+def test_get_change_spot_sizes():
+    """
+    Test for the get_change_spot_sizes function
+    """
+    change_pixels_count = 12
+
+    with tempfile.TemporaryDirectory() as td:
+        spot_list = GeoMockImage(
+            30, 20, 1, "uint16", "SAR", out_dir=Path(td)
+        ).get_change_spot_sizes(change_pixels=change_pixels_count)
+        assert sum(spot_list) == change_pixels_count
+
+
 def test_cog():
     with tempfile.TemporaryDirectory() as td:
         test_img, _ = GeoMockImage(
