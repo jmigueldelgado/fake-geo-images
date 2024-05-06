@@ -11,7 +11,7 @@ it is necessary to have an actual input image file or array. Organising these te
 they should not be stored in git as they are large binary data and when stored outside, there always
 is the danger that they are not updated according to changes in the code repo.
 
-**fake-geo-images** provides a solution to the problem by providing simple code that allows to create
+**geomockimages** provides a solution to the problem by providing simple code that allows to create
 geospatial images (so far geotiffs) in a parameterised way. 
 
 ## Install package
