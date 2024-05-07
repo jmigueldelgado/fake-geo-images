@@ -1,6 +1,7 @@
 """
 Common raster handling methods
 """
+
 from pathlib import Path
 
 from rio_cogeo.cogeo import cog_translate

@@ -6,13 +6,13 @@ A module to programmatically create geotiff images which can be used for unit te
     <img src="./coverage.svg">
 </p>
 
-The underlying idea is that in order to write unit tests for geospatial image processsing algorithms, 
+The underlying idea is that in order to write unit tests for geospatial image processsing algorithms,
 it is necessary to have an actual input image file or array. Organising these test images becomes a chore over time,
 they should not be stored in git as they are large binary data and when stored outside, there always
 is the danger that they are not updated according to changes in the code repo.
 
 **geomockimages** provides a solution to the problem by providing simple code that allows to create
-geospatial images (so far geotiffs) in a parameterised way. 
+geospatial images (so far geotiffs) in a parameterised way.
 
 ## Install package
 ```bash
@@ -66,5 +66,3 @@ def test_ndvi():
         assert ndvi_array.max <= 1
 
 ```
-
-

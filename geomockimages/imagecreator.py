@@ -97,6 +97,76 @@ class GeoMockImage:
             self.nodata = nodata
         self.cog = cog
 
+    def create(
+        self,
+        seed: Union[int, None] = None,
+        noise_seed: Union[int, None] = None,
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
+        transform: rasterio.Affine = from_origin(1470996, 6914001, 2.0, 2.0),
+        file_name: Union[str, None] = None,
+        band_desc: Union[list, None] = None,
+    ) -> tuple:
+        """
+        Creates a synthetic image file with a given seed. Returns a tuple with
+        (path to file, array).
+        Transform is set by default to `from_origin(1470996, 6914001, 2.0, 2.0)`. Pass
+        another Affine transform if needed.
+
+        Arguments:
+            image_type: either 'optical' or 'SAR', optical by default
+            seed: A random seed number. Ensures reproducibility.
+            noise_seed: used when multiple images with the same seed are created that have slight differences e.g. when simulating a time series
+            transform: An Affine transform for the image to be generated.
+            file_name: A name for the created file.
+            band_desc: List with descriptions (strings) for each band.
+
+        Returns:
+            Path to the output image, numpy array of image values.
+        """
+        band_list = self.add_img_pattern(
+            seed, noise_seed, noise_intensity, change_pixels
+        )
+
+        if not file_name:
+            filepath = self.out_dir.joinpath(str(uuid.uuid4()) + ".tif")
+        else:
+            filepath = self.out_dir.joinpath(file_name + ".tif")
+
+        # Even though we don't want a nodata value to be set, we still need a value that represents it for image
+        # creation purposes
+        if self.nodata is None:
+            nodata_val = 0
+        else:
+            nodata_val = self.nodata  # type: ignore
+        with rasterio.open(
+            filepath,
+            "w",
+            driver="GTiff",
+            height=self.ysize,
+            width=self.xsize,
+            count=self.num_bands,
+            dtype=str(band_list[0].dtype),
+            crs=rio_crs.CRS.from_epsg(self.crs),
+            transform=transform,
+            nodata=self.nodata,
+        ) as out_img:
+            for band_id, layer in enumerate(band_list):
+                layer[0 : self.nodata_fill, 0 : self.nodata_fill] = nodata_val
+                out_img.write_band(band_id + 1, layer)
+                if band_desc is not None:
+                    try:
+                        out_img.set_band_description(band_id + 1, band_desc[band_id])
+                    except IndexError:
+                        logger.debug(
+                            "Number of band descriptions does not match number of bands"
+                        )
+
+        if self.cog:
+            to_cog(Path(filepath))
+
+        return filepath, np.array(band_list)
+
     def add_img_pattern(
         self,
         seed: Union[int, None],
@@ -169,12 +239,36 @@ class GeoMockImage:
 
             if change_pixels > 0:
                 bands = self.add_change_pixels(
+                    img_data=bands,
                     seed=seed,
                     noise_intensity=noise_intensity,
                     change_pixels=change_pixels,
                 )
 
         return bands
+
+    def add_change_pixels(
+        self,
+        img_data,
+        seed: Union[int, None],
+        noise_intensity: float = 1.0,
+        change_pixels: int = 0,
+    ) -> List[np.ndarray]:
+        """
+        Args:
+            seed: A random seed number. Ensures reproducibility.
+            noise_seed: A random seed number for noise
+            noise_intensity: multiplier for noise
+            change_pixels: number of pixels that are changed from the original value. Usable for change detection purposes
+        Returns:
+            List of numpy array bands representing simulated image.
+
+        """
+        logger.info("Now adding change pixels")
+        change_spots = self.get_change_spot_sizes(change_pixels)
+        logger.debug(change_spots)
+
+        return img_data
 
     def get_change_spot_sizes(self, change_pixels: int) -> List[int]:
         """
@@ -196,96 +290,3 @@ class GeoMockImage:
             pixels_left -= patch_size
 
         return change_patches
-
-    def add_change_pixels(
-        self,
-        seed: Union[int, None],
-        noise_intensity: float = 1.0,
-        change_pixels: int = 0,
-    ) -> List[np.ndarray]:
-        """
-        Args:
-            seed: A random seed number. Ensures reproducibility.
-            noise_seed: A random seed number for noise
-            noise_intensity: multiplier for noise
-            change_pixels: number of pixels that are changed from the original value. Usable for change detection purposes
-        Returns:
-            List of numpy array bands representing simulated image.
-
-        """
-        change_spots = self.get_change_spot_sizes()
-        print(change_spots)
-
-        bands = None
-
-        return bands
-
-    def create(
-        self,
-        seed: Union[int, None] = None,
-        noise_seed: Union[int, None] = None,
-        noise_intensity: float = 1.0,
-        change_pixels: int = 0,
-        transform: rasterio.Affine = from_origin(1470996, 6914001, 2.0, 2.0),
-        file_name: Union[str, None] = None,
-        band_desc: Union[list, None] = None,
-    ) -> tuple:
-        """
-        Creates a synthetic image file with a given seed. Returns a tuple with
-        (path to file, array).
-        Transform is set by default to `from_origin(1470996, 6914001, 2.0, 2.0)`. Pass
-        another Affine transform if needed.
-
-        Arguments:
-            image_type: either 'optical' or 'SAR', optical by default
-            seed: A random seed number. Ensures reproducibility.
-            noise_seed: used when multiple images with the same seed are created that have slight differences e.g. when simulating a time series
-            transform: An Affine transform for the image to be generated.
-            file_name: A name for the created file.
-            band_desc: List with descriptions (strings) for each band.
-
-        Returns:
-            Path to the output image, numpy array of image values.
-        """
-        band_list = self.add_img_pattern(
-            seed, noise_seed, noise_intensity, change_pixels
-        )
-
-        if not file_name:
-            filepath = self.out_dir.joinpath(str(uuid.uuid4()) + ".tif")
-        else:
-            filepath = self.out_dir.joinpath(file_name + ".tif")
-
-        # Even though we don't want a nodata value to be set, we still need a value that represents it for image
-        # creation purposes
-        if self.nodata is None:
-            nodata_val = 0
-        else:
-            nodata_val = self.nodata  # type: ignore
-        with rasterio.open(
-            filepath,
-            "w",
-            driver="GTiff",
-            height=self.ysize,
-            width=self.xsize,
-            count=self.num_bands,
-            dtype=str(band_list[0].dtype),
-            crs=rio_crs.CRS.from_epsg(self.crs),
-            transform=transform,
-            nodata=self.nodata,
-        ) as out_img:
-            for band_id, layer in enumerate(band_list):
-                layer[0 : self.nodata_fill, 0 : self.nodata_fill] = nodata_val
-                out_img.write_band(band_id + 1, layer)
-                if band_desc is not None:
-                    try:
-                        out_img.set_band_description(band_id + 1, band_desc[band_id])
-                    except IndexError:
-                        logger.debug(
-                            "Number of band descriptions does not match number of bands"
-                        )
-
-        if self.cog:
-            to_cog(Path(filepath))
-
-        return filepath, np.array(band_list)
