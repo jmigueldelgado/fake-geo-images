@@ -118,12 +118,12 @@ def test_sar_image_1band_pair_change():
     """
     with tempfile.TemporaryDirectory() as td:
         _, data1 = GeoMockImage(30, 20, 1, "uint16", "SAR", out_dir=Path(td)).create(
-            seed=12, noise_seed=5, noise_intensity=0.01
+            seed=11, noise_seed=5, noise_intensity=0.01
         )
 
         test_img, data2 = GeoMockImage(
             30, 20, 1, "uint16", "SAR", out_dir=Path(td)
-        ).create(seed=12, noise_seed=5, noise_intensity=0.01, change_pixels=10)
+        ).create(seed=11, noise_seed=5, noise_intensity=0.01, change_pixels=10)
 
         # Make sure image data was properly written to disk
         with rio.open(str(test_img)) as src:
