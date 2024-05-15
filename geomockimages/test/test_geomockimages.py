@@ -148,6 +148,21 @@ def test_get_change_spot_sizes():
         assert sum(spot_list) == change_pixels_count
 
 
+def test_get_change_spot_indices():
+    """
+    Test for the get_change_spot_indices function
+    """
+    spot_sizes = [1, 4, 2]
+
+    with tempfile.TemporaryDirectory() as td:
+        change_mask = GeoMockImage(
+            30, 20, 1, "uint16", "SAR", out_dir=Path(td)
+        ).get_change_spot_indices(spot_sizes=spot_sizes)
+
+        assert np.shape(change_mask) == (20, 30)
+        assert np.sum(change_mask) == 7
+
+
 def test_cog():
     with tempfile.TemporaryDirectory() as td:
         test_img, _ = GeoMockImage(

@@ -2,6 +2,7 @@
 Utility class to generate synthetic images, especially useful for testing purposes.
 """
 
+import random
 import uuid
 from pathlib import Path
 from typing import Union, List
@@ -293,20 +294,50 @@ class GeoMockImage:
         return change_patches
 
     def get_change_spot_indices(self, spot_sizes):
-        return []
+        # Sample the 2D image space to get the centers of the change spots
+        # change_pixels = []
+        yx = np.random.rand(len(spot_sizes), 2)
+
+        yx[:, 0] = yx[:, 0] * (self.ysize - 1)
+        yx[:, 1] = yx[:, 1] * (self.xsize - 1)
+        yx = np.rint(yx).astype(int)
+
+        directions = ["u", "d", "r", "l"]
+
+        for i in range(len(spot_sizes)):
+            pxls = [(int(yx[i][0]), int(yx[i][1]))]  # This is the starting pixel
+            for step in spot_sizes:
+                nextmove = random.sample(directions, 1)[0]
+                match nextmove:
+                    case "u":
+                        logger.debug("u")
+                        newpix_np = pxls[-1] + np.array([1, 0])
+                    case "d":
+                        logger.debug("d")
+                        newpix_np = pxls[-1] + np.array([-1, 0])
+                    case "l":
+                        logger.debug("l")
+                        newpix_np = pxls[-1] + np.array([0, -1])
+                    case "r":
+                        logger.debug("r")
+                        newpix_np = pxls[-1] + np.array([0, 1])
+                newpix = (int(newpix_np[0]), int(newpix_np[1]))
+                pxls.append(newpix)
+            logger.info(pxls)
+
+            # This is what we need: idxs = ((1,1), (4,1))
+            # change_pixels += tuple(pxls[0], pxls[1])
+            # change_pixels = tuple(change_pixels)
+
+        logger.debug(pxls)
+        idxs = (tuple(i[0] for i in pxls), tuple(i[1] for i in pxls))
+
+        change_mask = np.zeros((self.ysize, self.xsize), dtype=bool)
+        change_mask[idxs] = True
+
+        # TODO add method to eliminate duplicates
+
+        return change_mask
 
     def apply_change(self, spot_indices):
-        # Sample the 2D image space to get the centers of the change spots
-        change_pixels = []
-        yx = np.random.rand(len(spot_indices), 2)
-
-        yx[:, 0] = yx[:, 0] * self.ysize
-        yx[:, 1] = yx[:, 1] * self.xsize
-        yx = np.rint(yx)
-
-        # grow it until size is used up
-        # Add pixels to change pixels list
-        logger.debug(change_pixels)
-        # TODO add method to eliminate dupllicates
-
         return None
