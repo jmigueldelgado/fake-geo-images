@@ -294,6 +294,8 @@ class GeoMockImage:
         return change_patches
 
     def get_change_spot_indices(self, spot_sizes):
+        directions = ["u", "d", "r", "l"]
+
         # Sample the 2D image space to get the centers of the change spots
         change_pixels = []
         yx = np.random.rand(len(spot_sizes), 2)
@@ -301,8 +303,6 @@ class GeoMockImage:
         yx[:, 0] = yx[:, 0] * (self.ysize - 1)
         yx[:, 1] = yx[:, 1] * (self.xsize - 1)
         yx = np.rint(yx).astype(int)
-
-        directions = ["u", "d", "r", "l"]
 
         for i in range(len(spot_sizes)):
             pxls = [(int(yx[i][0]), int(yx[i][1]))]  # This is the starting pixel
@@ -323,15 +323,20 @@ class GeoMockImage:
                         logger.debug("r")
                         newpix_np = pxls[-1] + np.array([0, 1])
                 newpix = (int(newpix_np[0]), int(newpix_np[1]))
+
+                if (
+                    newpix[0] >= self.ysize
+                    or newpix[1] >= self.xsize
+                    or newpix[0] < 0
+                    or newpix[0] < 0
+                ):
+                    continue  # avoiding duplicates
                 pxls.append(newpix)
                 change_pixels.append(newpix)
             logger.info(pxls)
 
-            # This is what we need: idxs = ((1,1), (4,1))
-            # change_pixels += tuple(pxls[0], pxls[1])
-            # change_pixels = tuple(change_pixels)
-
         logger.debug(change_pixels)
+        change_pixels = set(change_pixels)  # This removes duplicates
 
         idxs = (tuple(i[0] for i in change_pixels), tuple(i[1] for i in change_pixels))
 
