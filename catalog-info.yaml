@@ -7,10 +7,8 @@ metadata:
   annotations:
     circleci.com/project-slug: "github/up42/fake-geo-images"
     github.com/project-slug: "up42/fake-geo-images"
-    backstage.io/techdocs-ref: dir:.
-    backstage.io/kubernetes-label-selector: "app=fake-geo-images"
 spec:
-  type: service
+  type: library
   owner: group:up42/processing-platform-team
   lifecycle: production
   system: up42/processing-platform
