@@ -294,49 +294,55 @@ class GeoMockImage:
         return change_patches
 
     def get_change_spot_indices(self, spot_sizes):
+        spot_sizes_orig = spot_sizes
         directions = ["u", "d", "r", "l"]
-
-        # Sample the 2D image space to get the centers of the change spots
         change_pixels = []
-        yx = np.random.rand(len(spot_sizes), 2)
+        remaining_pxls = sum(spot_sizes)
 
-        yx[:, 0] = yx[:, 0] * (self.ysize - 1)
-        yx[:, 1] = yx[:, 1] * (self.xsize - 1)
-        yx = np.rint(yx).astype(int)
+        while remaining_pxls > 0:
+            # Sample the 2D image space to get the centers of the change spots
+            yx = np.random.rand(len(spot_sizes), 2)
 
-        for i in range(len(spot_sizes)):
-            pxls = [(int(yx[i][0]), int(yx[i][1]))]  # This is the starting pixel
+            yx[:, 0] = yx[:, 0] * (self.ysize - 1)
+            yx[:, 1] = yx[:, 1] * (self.xsize - 1)
+            yx = np.rint(yx).astype(int)
 
-            for next_step in range(spot_sizes[i]):
-                nextmove = random.sample(directions, 1)[0]
-                match nextmove:
-                    case "u":
-                        logger.debug("u")
-                        newpix_np = pxls[-1] + np.array([1, 0])
-                    case "d":
-                        logger.debug("d")
-                        newpix_np = pxls[-1] + np.array([-1, 0])
-                    case "l":
-                        logger.debug("l")
-                        newpix_np = pxls[-1] + np.array([0, -1])
-                    case "r":
-                        logger.debug("r")
-                        newpix_np = pxls[-1] + np.array([0, 1])
-                newpix = (int(newpix_np[0]), int(newpix_np[1]))
+            for i in range(len(spot_sizes)):
+                pxls = [(int(yx[i][0]), int(yx[i][1]))]  # This is the starting pixel
 
-                if (
-                    newpix[0] >= self.ysize
-                    or newpix[1] >= self.xsize
-                    or newpix[0] < 0
-                    or newpix[0] < 0
-                ):
-                    continue  # avoiding duplicates
-                pxls.append(newpix)
-                change_pixels.append(newpix)
-            logger.info(pxls)
+                for next_step in range(spot_sizes[i]):
+                    nextmove = random.sample(directions, 1)[0]
+                    match nextmove:
+                        case "u":
+                            logger.debug("u")
+                            newpix_np = pxls[-1] + np.array([1, 0])
+                        case "d":
+                            logger.debug("d")
+                            newpix_np = pxls[-1] + np.array([-1, 0])
+                        case "l":
+                            logger.debug("l")
+                            newpix_np = pxls[-1] + np.array([0, -1])
+                        case "r":
+                            logger.debug("r")
+                            newpix_np = pxls[-1] + np.array([0, 1])
+                    newpix = (int(newpix_np[0]), int(newpix_np[1]))
 
-        logger.debug(change_pixels)
-        change_pixels = set(change_pixels)  # This removes duplicates
+                    if (
+                        newpix[0] >= self.ysize
+                        or newpix[1] >= self.xsize
+                        or newpix[0] < 0
+                        or newpix[0] < 0
+                    ):
+                        continue  # avoiding duplicates
+                    pxls.append(newpix)
+                    change_pixels.append(newpix)
+                logger.info(pxls)
+
+            logger.debug(change_pixels)
+            change_pixels_set = set(change_pixels)  # This removes duplicates
+
+            remaining_pxls = sum(spot_sizes_orig) - len(change_pixels_set)
+            spot_sizes = [remaining_pxls]
 
         idxs = (tuple(i[0] for i in change_pixels), tuple(i[1] for i in change_pixels))
 
