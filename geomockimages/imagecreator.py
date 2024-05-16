@@ -295,7 +295,7 @@ class GeoMockImage:
 
     def get_change_spot_indices(self, spot_sizes):
         # Sample the 2D image space to get the centers of the change spots
-        # change_pixels = []
+        change_pixels = []
         yx = np.random.rand(len(spot_sizes), 2)
 
         yx[:, 0] = yx[:, 0] * (self.ysize - 1)
@@ -306,7 +306,8 @@ class GeoMockImage:
 
         for i in range(len(spot_sizes)):
             pxls = [(int(yx[i][0]), int(yx[i][1]))]  # This is the starting pixel
-            for step in spot_sizes:
+
+            for next_step in range(spot_sizes[i]):
                 nextmove = random.sample(directions, 1)[0]
                 match nextmove:
                     case "u":
@@ -323,20 +324,21 @@ class GeoMockImage:
                         newpix_np = pxls[-1] + np.array([0, 1])
                 newpix = (int(newpix_np[0]), int(newpix_np[1]))
                 pxls.append(newpix)
+                change_pixels.append(newpix)
             logger.info(pxls)
 
             # This is what we need: idxs = ((1,1), (4,1))
             # change_pixels += tuple(pxls[0], pxls[1])
             # change_pixels = tuple(change_pixels)
 
-        logger.debug(pxls)
-        idxs = (tuple(i[0] for i in pxls), tuple(i[1] for i in pxls))
+        logger.debug(change_pixels)
+
+        idxs = (tuple(i[0] for i in change_pixels), tuple(i[1] for i in change_pixels))
 
         change_mask = np.zeros((self.ysize, self.xsize), dtype=bool)
         change_mask[idxs] = True
 
         # TODO add method to eliminate duplicates
-
         return change_mask
 
     def apply_change(self, spot_indices):
