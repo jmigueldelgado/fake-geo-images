@@ -294,6 +294,13 @@ class GeoMockImage:
         return change_patches
 
     def get_change_spot_indices(self, spot_sizes):
+        """
+        Given the sizes of the change spots, this method identifies their spatial location within the image
+        Args:
+            spot_sizes: List of sizes of the change spots
+        Returns:
+            A boolean mask showing the location of the change pixels.
+        """
         spot_sizes_orig = spot_sizes
         directions = ["u", "d", "r", "l"]
         change_pixels = []
