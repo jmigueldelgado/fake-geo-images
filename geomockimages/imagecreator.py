@@ -268,7 +268,7 @@ class GeoMockImage:
         logger.info("Now adding change pixels")
         change_spot_sizes = self.get_change_spot_sizes(change_pixels)
         change_spot_indices = self.get_change_spot_indices(change_spot_sizes)
-        bands = self.apply_change(change_spot_indices)
+        bands = self.apply_change(bands, change_spot_indices)
 
         return bands
 
@@ -356,8 +356,17 @@ class GeoMockImage:
         change_mask = np.zeros((self.ysize, self.xsize), dtype=bool)
         change_mask[idxs] = True
 
-        # TODO add method to eliminate duplicates
         return change_mask
 
-    def apply_change(self, spot_indices):
-        return None
+    def apply_change(self, bands, spot_indices, change_factor=1.3):
+        """
+        Args:
+            bands: List of numpy arrays representing simulated image.
+            spot_indices: A boolean mask showing the location of the change pixels.
+        Returns:
+            List of numpy array bands representing simulated image.
+        """
+        for i in range(self.num_bands):
+            bands[i][spot_indices] = bands[i][spot_indices] * change_factor
+
+        return bands
