@@ -6,12 +6,9 @@ parent_dir = Path(__file__).resolve().parent
 setup(
     name="fake-geo-images",
     version="0.1.5",
-    author="UP42",
-    author_email="support@up42.com",
     description="Fake geospatial images for unit tests",
     long_description=parent_dir.joinpath("README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
-    url="https://github.com/up42/fake-geo-images",
     packages=find_packages(),
     license="MIT",
     classifiers=[
