@@ -1,5 +1,7 @@
 # fake-geo-images
 
+[WARNING] The repo's ownership is currently being transfered. It might take a few days until the new owner has finalized the setup.
+
 A module to programmatically create geotiff images which can be used for unit tests.
 
 <p align="center">
